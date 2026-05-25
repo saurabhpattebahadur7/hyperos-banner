@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperOS 3.0 — Xiaomi 11i</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --p: #c850ff;
+  --p2: #ff3c8e;
+  --p3: #00e5ff;
+  --p4: #ff8c42;
+  --p5: #ffe600;
+  --bg: #06060f;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ======= BANNER ======= */
+.banner {
+  position: relative;
+  width: 960px;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg);
+  isolation: isolate;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* Animated BG */
+.bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(200,80,255,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 20% 80%, rgba(255,60,140,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 50% 50%, rgba(0,229,255,0.08) 0%, transparent 70%),
+    linear-gradient(135deg, #07040f 0%, #0a0618 40%, #080412 100%);
+  animation: bgPulse 8s ease-in-out infinite alternate;
+}
+@keyframes bgPulse {
+  0%   { filter: brightness(1); }
+  100% { filter: brightness(1.15); }
+}
+
+/* Moving grid */
+.grid {
+  position: absolute;
+  inset: -50px;
+  background-image:
+    linear-gradient(rgba(200,80,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,80,255,0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: gridDrift 25s linear infinite;
+}
+@keyframes gridDrift {
+  0%   { transform: translate(0,0); }
+  100% { transform: translate(44px, 44px); }
+}
+
+/* Animated border */
+.border-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1.5px;
+  background: linear-gradient(var(--angle, 0deg), var(--p), var(--p2), var(--p3), var(--p4), var(--p5), var(--p));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotateBorder 4s linear infinite;
+}
+@keyframes rotateBorder {
+  to { --angle: 360deg; }
+}
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Top rainbow bar */
+.top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--p), var(--p2), var(--p4), var(--p5), var(--p3), var(--p));
+  background-size: 300% 100%;
+  animation: barSlide 3s linear infinite;
+  z-index: 50;
+}
+/* Bottom rainbow bar */
+.bottom-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--p3), var(--p), var(--p2), var(--p4), var(--p5), var(--p3));
+  background-size: 300% 100%;
+  animation: barSlide 3s linear infinite reverse;
+  z-index: 50;
+}
+@keyframes barSlide {
+  from { background-position: 0% 0%; }
+  to   { background-position: 300% 0%; }
+}
+
+/* Scanlines */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Floating particles */
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  overflow: hidden;
+}
+.p {
+  position: absolute;
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(1); opacity: 0.8; }
+  100% { transform: translateY(-550px) scale(0); opacity: 0; }
+}
+
+/* Glitch scan */
+.glitch {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 10%, var(--p) 40%, var(--p2) 60%, transparent 90%);
+  animation: scanDown 7s linear infinite;
+  opacity: 0;
+  z-index: 8;
+}
+@keyframes scanDown {
+  0%   { top: 0%;   opacity: 0; }
+  5%   { opacity: 0.6; }
+  90%  { opacity: 0.4; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ======= CONTENT ======= */
+.content {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  height: 100%;
+  padding: 32px 50px;
+  gap: 36px;
+  align-items: center;
+}
+
+/* === LEFT === */
+.left {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(200,80,255,0.1);
+  border: 1px solid rgba(200,80,255,0.45);
+  border-radius: 30px;
+  padding: 5px 14px;
+  width: fit-content;
+  margin-bottom: 14px;
+  animation: fadeUp 0.5s ease both;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--p);
+  box-shadow: 0 0 10px var(--p), 0 0 20px var(--p);
+  animation: liveBlink 1.2s ease-in-out infinite;
+}
+@keyframes liveBlink {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.3; transform:scale(0.7); }
+}
+.live-tag span {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--p);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.brand {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.model {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 0.9;
+  background: linear-gradient(135deg, #fff 0%, #ff80c0 50%, var(--p) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeUp 0.7s ease both, modelGlow 4s ease-in-out infinite alternate, gradShift 6s ease infinite;
+  filter: drop-shadow(0 0 25px rgba(200,80,255,0.5));
+  letter-spacing: -3px;
+  margin-bottom: 2px;
+}
+@keyframes modelGlow {
+  from { filter: drop-shadow(0 0 15px rgba(200,80,255,0.4)); }
+  to   { filter: drop-shadow(0 0 40px rgba(255,60,140,0.7)); }
+}
+@keyframes gradShift {
+  0%,100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+.os-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 10px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.ver-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 9px 18px;
+  margin-bottom: 18px;
+  width: fit-content;
+  animation: fadeUp 0.9s ease both;
+  backdrop-filter: blur(8px);
+}
+.ver-box .vl { font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+.ver-box .vv {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.badges {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  animation: fadeUp 1s ease both;
+}
+.badge {
+  padding: 5px 13px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.badge:hover { transform: translateY(-3px) scale(1.05); }
+.badge::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
+}
+.bg { background:rgba(0,230,130,0.12); border:1px solid rgba(0,230,130,0.4); color:#00e682; }
+.bp { background:rgba(200,80,255,0.12); border:1px solid rgba(200,80,255,0.4); color:var(--p); }
+.bb { background:rgba(0,200,255,0.12); border:1px solid rgba(0,200,255,0.4); color:var(--p3); }
+
+/* FASTBOOT PILL */
+.fastboot-pill {
+  position: absolute;
+  top: 22px; right: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,140,66,0.1);
+  border: 1px solid rgba(255,140,66,0.5);
+  border-radius: 30px;
+  padding: 7px 18px;
+  z-index: 30;
+  animation: pillIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both 0.4s;
+}
+@keyframes pillIn {
+  from { transform:scale(0) rotate(-10deg); opacity:0; }
+  to   { transform:scale(1) rotate(0deg); opacity:1; }
+}
+.fastboot-pill .ficon {
+  font-size: 15px;
+  animation: flashPulse 1s ease-in-out infinite;
+}
+@keyframes flashPulse {
+  0%,100% { transform:scale(1); opacity:1; }
+  50%      { transform:scale(0.75); opacity:0.5; }
+}
+.fastboot-pill span {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--p4);
+  text-transform: uppercase;
+}
+
+/* VERTICAL DIVIDER */
+.vline {
+  width: 1px;
+  align-self: stretch;
+  background: linear-gradient(180deg, transparent, rgba(200,80,255,0.3), rgba(255,60,140,0.3), transparent);
+  flex-shrink: 0;
+}
+
+/* === RIGHT === */
+.right {
+  flex: 0.85;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+
+.info-row {
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  animation: fadeLeft 0.7s ease both;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .il {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  color: rgba(255,255,255,0.28);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.info-row .iv {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.5px;
+}
+
+.maint-row {
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  animation: fadeLeft 0.9s ease both;
+}
+.maint-row .il {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  color: rgba(255,255,255,0.28);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.maint-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--p), var(--p2), var(--p4));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradShift 3s ease infinite;
+  letter-spacing: 4px;
+}
+
+.credits-row {
+  padding: 13px 0;
+  animation: fadeLeft 1s ease both;
+}
+.credits-row .il {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  color: rgba(255,255,255,0.28);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.credit {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.3px;
+}
+.credit-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Download button */
+.dl-btn {
+  position: absolute;
+  bottom: 22px; right: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(200,80,255,0.2), rgba(255,60,140,0.15));
+  border: 1px solid rgba(200,80,255,0.5);
+  border-radius: 10px;
+  padding: 10px 22px;
+  text-decoration: none;
+  z-index: 30;
+  animation: fadeUp 1.2s ease both;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.dl-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(200,80,255,0.3);
+}
+.dl-btn .dico { font-size: 16px; }
+.dl-btn span {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* Corner accents */
+.corner {
+  position: absolute;
+  width: 24px; height: 24px;
+  z-index: 25;
+}
+.c-tl { top:12px; left:12px; border-top:2px solid var(--p); border-left:2px solid var(--p); animation: cGlow 2s ease-in-out infinite alternate; }
+.c-tr { top:12px; right:12px; border-top:2px solid var(--p2); border-right:2px solid var(--p2); animation: cGlow 2.3s ease-in-out infinite alternate-reverse; }
+.c-bl { bottom:12px; left:12px; border-bottom:2px solid var(--p3); border-left:2px solid var(--p3); animation: cGlow 2.6s ease-in-out infinite alternate; }
+.c-br { bottom:12px; right:12px; border-bottom:2px solid var(--p4); border-right:2px solid var(--p4); animation: cGlow 2.9s ease-in-out infinite alternate-reverse; }
+@keyframes cGlow {
+  from { opacity:0.4; }
+  to   { opacity:1; filter:drop-shadow(0 0 6px currentColor); }
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeLeft {
+  from { opacity:0; transform:translateX(16px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+</style>
+</head>
+<body>
+<div class="banner">
+  <!-- BG layers -->
+  <div class="bg"></div>
+  <div class="grid"></div>
+  <div class="scanlines"></div>
+  <div class="glitch"></div>
+  <div class="particles" id="pts"></div>
+  <div class="border-ring"></div>
+  <div class="top-bar"></div>
+  <div class="bottom-bar"></div>
+
+  <!-- Corners -->
+  <div class="corner c-tl"></div>
+  <div class="corner c-tr"></div>
+  <div class="corner c-bl"></div>
+  <div class="corner c-br"></div>
+
+  <!-- Fastboot pill -->
+  <div class="fastboot-pill">
+    <span class="ficon">⚡</span>
+    <span>Fastboot ROM</span>
+  </div>
+
+  <!-- Download button -->
+  <a class="dl-btn" href="https://drive.google.com/file/d/1nW83oDePwsCg316X6WPKEdA0tchzbyOk/view?usp=sharing" target="_blank">
+    <span class="dico">📥</span>
+    <span>Download ROM</span>
+  </a>
+
+  <div class="content">
+    <!-- LEFT -->
+    <div class="left">
+      <div class="live-tag">
+        <div class="live-dot"></div>
+        <span>Official Release</span>
+      </div>
+      <div class="brand">Xiaomi</div>
+      <div class="model">11i</div>
+      <div class="os-name">HyperOS 3.0</div>
+
+      <div class="ver-box">
+        <span class="vl">Build</span>
+        <span class="vv">3.0.2.0.VNQMIXM</span>
+      </div>
+
+      <div class="badges">
+        <div class="badge bg">✓ Certified</div>
+        <div class="badge bp">✓ Full Stock</div>
+        <div class="badge bb">✓ Fixed ROM</div>
+      </div>
+    </div>
+
+    <div class="vline"></div>
+
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="info-row">
+        <div class="il">Android</div>
+        <div class="iv">15 · AP3A.240905.015.A2</div>
+      </div>
+      <div class="info-row">
+        <div class="il">Security Patch</div>
+        <div class="iv">May 01, 2026</div>
+      </div>
+      <div class="info-row">
+        <div class="il">Flash Method</div>
+        <div class="iv">flash_all.bat (Admin)</div>
+      </div>
+
+      <div class="maint-row">
+        <div class="il">Maintainer</div>
+        <div class="maint-name">≡ ROLEX ≡</div>
+      </div>
+
+      <div class="credits-row">
+        <div class="il">Credits</div>
+        <div class="credit"><div class="credit-dot" style="background:var(--p)"></div>@sujithsnk</div>
+        <div class="credit"><div class="credit-dot" style="background:var(--p2)"></div>@Stability_BrickOS</div>
+        <div class="credit"><div class="credit-dot" style="background:var(--p3)"></div>@Unevenatharv</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Particles
+const pts = document.getElementById('pts');
+const colors = ['#c850ff','#ff3c8e','#00e5ff','#ff8c42','#ffe600','#ffffff'];
+for(let i = 0; i < 50; i++){
+  const p = document.createElement('div');
+  p.className = 'p';
+  const size = Math.random() * 3 + 1;
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  p.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random()*100}%;
+    top:${Math.random()*100+100}%;
+    background:${color};
+    box-shadow:0 0 ${size*3}px ${color};
+    animation-duration:${Math.random()*6+4}s;
+    animation-delay:${Math.random()*8}s;
+  `;
+  pts.appendChild(p);
+}
+</script>
+</body>
+</html>
