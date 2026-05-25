@@ -1,596 +1,608 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HyperOS 3.0 — Xiaomi 11i</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>HyperOS 3.0 | Xiaomi 11i — Full Stock ROM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-:root {
-  --p: #c850ff;
-  --p2: #ff3c8e;
-  --p3: #00e5ff;
-  --p4: #ff8c42;
-  --p5: #ffe600;
-  --bg: #06060f;
-}
+        :root {
+            --bg-deep: #03050b;
+            --bg-card: rgba(18, 22, 35, 0.85);
+            --hyper-primary: #2b7fff;
+            --hyper-glow: #3b8eff;
+            --hyper-gradient: linear-gradient(135deg, #2b7fff, #1a5fcf);
+            --orange-fox: #ff6e2c;
+            --orange-glow: #ff8c42;
+            --orange-gradient: linear-gradient(135deg, #ff6e2c, #e85d1a);
+            --accent-cyan: #00e5ff;
+            --accent-green: #00e676;
+            --text-main: #ffffff;
+            --text-dim: #a8b3cf;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+        }
 
-html, body {
-  width: 100%; height: 100%;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
+        body {
+            background: radial-gradient(ellipse at 30% 20%, #0a1020, #020408);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-main);
+        }
 
-/* ======= BANNER ======= */
-.banner {
-  position: relative;
-  width: 960px;
-  height: 500px;
-  border-radius: 20px;
-  overflow: hidden;
-  background: var(--bg);
-  isolation: isolate;
-  font-family: 'Rajdhani', sans-serif;
-}
+        /* animated bg elements */
+        .bg-aura {
+            position: fixed;
+            top: -20%;
+            right: -15%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(43, 127, 255, 0.25), rgba(0, 0, 0, 0) 70%);
+            filter: blur(90px);
+            z-index: -1;
+            animation: floatAura 18s infinite alternate;
+        }
+        .bg-aura-2 {
+            position: fixed;
+            bottom: -10%;
+            left: -10%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(180, 132, 255, 0.18), rgba(0, 0, 0, 0) 70%);
+            filter: blur(100px);
+            z-index: -1;
+            animation: floatAura2 15s infinite alternate;
+        }
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            100% { transform: translate(-40px, 60px) scale(1.1); opacity: 0.8; }
+        }
+        @keyframes floatAura2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, -40px) scale(1.15); }
+        }
 
-/* Animated BG */
-.bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(200,80,255,0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 20% 80%, rgba(255,60,140,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 50% at 50% 50%, rgba(0,229,255,0.08) 0%, transparent 70%),
-    linear-gradient(135deg, #07040f 0%, #0a0618 40%, #080412 100%);
-  animation: bgPulse 8s ease-in-out infinite alternate;
-}
-@keyframes bgPulse {
-  0%   { filter: brightness(1); }
-  100% { filter: brightness(1.15); }
-}
+        /* loader */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #020408;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+        .loader-ring {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(43, 127, 255, 0.2);
+            border-top: 3px solid var(--hyper-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Moving grid */
-.grid {
-  position: absolute;
-  inset: -50px;
-  background-image:
-    linear-gradient(rgba(200,80,255,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,80,255,0.06) 1px, transparent 1px);
-  background-size: 44px 44px;
-  animation: gridDrift 25s linear infinite;
-}
-@keyframes gridDrift {
-  0%   { transform: translate(0,0); }
-  100% { transform: translate(44px, 44px); }
-}
+        /* main container */
+        .container {
+            max-width: 420px;
+            width: 100%;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+            display: none;
+        }
+        .container.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-/* Animated border */
-.border-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  padding: 1.5px;
-  background: linear-gradient(var(--angle, 0deg), var(--p), var(--p2), var(--p3), var(--p4), var(--p5), var(--p));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: rotateBorder 4s linear infinite;
-}
-@keyframes rotateBorder {
-  to { --angle: 360deg; }
-}
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
+        /* glassmorphic card */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-glass);
+            padding: 24px 22px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
 
-/* Top rainbow bar */
-.top-bar {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--p), var(--p2), var(--p4), var(--p5), var(--p3), var(--p));
-  background-size: 300% 100%;
-  animation: barSlide 3s linear infinite;
-  z-index: 50;
-}
-/* Bottom rainbow bar */
-.bottom-bar {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--p3), var(--p), var(--p2), var(--p4), var(--p5), var(--p3));
-  background-size: 300% 100%;
-  animation: barSlide 3s linear infinite reverse;
-  z-index: 50;
-}
-@keyframes barSlide {
-  from { background-position: 0% 0%; }
-  to   { background-position: 300% 0%; }
-}
+        /* header section */
+        .chip-device {
+            background: rgba(43, 127, 255, 0.12);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--hyper-primary);
+            border: 1px solid rgba(43, 127, 255, 0.3);
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+        }
+        .title {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+        .title-gradient {
+            background: var(--hyper-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .os-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 229, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 60px;
+            margin: 12px 0 18px 0;
+            font-size: 13px;
+            font-weight: 500;
+            border: 0.5px solid rgba(0, 229, 255, 0.3);
+        }
+        .os-badge i {
+            color: var(--accent-cyan);
+        }
 
-/* Scanlines */
-.scanlines {
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 3px,
-    rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
-  );
-  pointer-events: none;
-  z-index: 10;
-}
+        /* certified badge */
+        .certified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 230, 118, 0.12);
+            border: 1px solid rgba(0, 230, 118, 0.4);
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin-left: 8px;
+        }
 
-/* Floating particles */
-.particles {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  overflow: hidden;
-}
-.p {
-  position: absolute;
-  border-radius: 50%;
-  animation: floatUp linear infinite;
-}
-@keyframes floatUp {
-  0%   { transform: translateY(0) scale(1); opacity: 0.8; }
-  100% { transform: translateY(-550px) scale(0); opacity: 0; }
-}
+        /* info grid modern - Single column for build and security patch */
+        .info-modern {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .info-tile {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .info-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .info-value {
+            font-weight: 700;
+            font-size: 13px;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .maintainer-tile {
+            background: linear-gradient(120deg, rgba(43, 127, 255, 0.15), rgba(0, 229, 255, 0.05));
+            border-left: 3px solid var(--hyper-primary);
+        }
+        .maintainer-tile .info-value {
+            font-family: monospace;
+            letter-spacing: 1px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .flash-method-tile .info-value {
+            color: var(--accent-cyan);
+        }
 
-/* Glitch scan */
-.glitch {
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 10%, var(--p) 40%, var(--p2) 60%, transparent 90%);
-  animation: scanDown 7s linear infinite;
-  opacity: 0;
-  z-index: 8;
-}
-@keyframes scanDown {
-  0%   { top: 0%;   opacity: 0; }
-  5%   { opacity: 0.6; }
-  90%  { opacity: 0.4; }
-  100% { top: 100%; opacity: 0; }
-}
+        /* button row */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0 16px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: var(--hyper-gradient);
+            color: white;
+            box-shadow: 0 8px 20px -5px rgba(43, 127, 255, 0.45);
+        }
+        .btn-primary:active { transform: scale(0.97); background: #1a5fcf; }
 
-/* ======= CONTENT ======= */
-.content {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  height: 100%;
-  padding: 32px 50px;
-  gap: 36px;
-  align-items: center;
-}
+        /* ORANGEFOX BUTTON */
+        .btn-orange {
+            background: var(--orange-gradient);
+            color: white;
+            box-shadow: 0 8px 20px -5px rgba(255, 110, 44, 0.5);
+            border: 1px solid rgba(255, 140, 66, 0.6);
+        }
+        .btn-orange:active { transform: scale(0.97); background: #e85d1a; }
+        .btn-orange i { color: #ffd0a4; }
 
-/* === LEFT === */
-.left {
-  flex: 1.2;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
+        /* action chips row */
+        .action-row {
+            display: flex;
+            gap: 12px;
+            margin: 8px 0 12px;
+        }
+        .action-chip {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .action-chip i { margin-right: 6px; }
+        .action-chip.active {
+            background: rgba(43, 127, 255, 0.2);
+            color: var(--hyper-primary);
+            border-color: rgba(43, 127, 255, 0.5);
+        }
 
-.live-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(200,80,255,0.1);
-  border: 1px solid rgba(200,80,255,0.45);
-  border-radius: 30px;
-  padding: 5px 14px;
-  width: fit-content;
-  margin-bottom: 14px;
-  animation: fadeUp 0.5s ease both;
-}
-.live-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--p);
-  box-shadow: 0 0 10px var(--p), 0 0 20px var(--p);
-  animation: liveBlink 1.2s ease-in-out infinite;
-}
-@keyframes liveBlink {
-  0%,100% { opacity:1; transform:scale(1); }
-  50%      { opacity:0.3; transform:scale(0.7); }
-}
-.live-tag span {
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: var(--p);
-  font-weight: 700;
-  text-transform: uppercase;
-}
+        /* expandable panels */
+        .panel {
+            display: none;
+            margin-top: 18px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 24px;
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeSlide 0.35s ease;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .panel-title {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 3px solid var(--hyper-primary);
+            padding-left: 12px;
+        }
+        .log-list {
+            list-style: none;
+            padding: 0;
+        }
+        .log-list li {
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #ccd6f0;
+        }
+        .log-list li i.fa-check-circle { color: var(--hyper-primary); margin-top: 2px; }
+        .guide-step {
+            margin-bottom: 14px;
+        }
+        .guide-step strong {
+            color: var(--accent-cyan);
+            font-size: 13px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .guide-step p {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.45;
+            margin-left: 8px;
+        }
+        .divider-light {
+            margin: 15px 0;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .badge-small {
+            background: rgba(0, 229, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            display: inline-block;
+        }
 
-.brand {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 8px;
-  color: rgba(255,255,255,0.4);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-  animation: fadeUp 0.6s ease both;
-}
+        .footer-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+        a { text-decoration: none; }
+        
+        .stock-tag {
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
+            padding: 2px 10px;
+            font-size: 9px;
+            font-weight: 600;
+            margin-left: 6px;
+            color: var(--accent-cyan);
+        }
 
-.model {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 80px;
-  font-weight: 900;
-  line-height: 0.9;
-  background: linear-gradient(135deg, #fff 0%, #ff80c0 50%, var(--p) 100%);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: fadeUp 0.7s ease both, modelGlow 4s ease-in-out infinite alternate, gradShift 6s ease infinite;
-  filter: drop-shadow(0 0 25px rgba(200,80,255,0.5));
-  letter-spacing: -3px;
-  margin-bottom: 2px;
-}
-@keyframes modelGlow {
-  from { filter: drop-shadow(0 0 15px rgba(200,80,255,0.4)); }
-  to   { filter: drop-shadow(0 0 40px rgba(255,60,140,0.7)); }
-}
-@keyframes gradShift {
-  0%,100% { background-position: 0% 50%; }
-  50%      { background-position: 100% 50%; }
-}
-
-.os-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: 10px;
-  color: rgba(255,255,255,0.35);
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  animation: fadeUp 0.8s ease both;
-}
-
-.ver-box {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 8px;
-  padding: 9px 18px;
-  margin-bottom: 18px;
-  width: fit-content;
-  animation: fadeUp 0.9s ease both;
-  backdrop-filter: blur(8px);
-}
-.ver-box .vl { font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
-.ver-box .vv {
-  font-family: 'Space Mono', monospace;
-  font-size: 14px;
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-.badges {
-  display: flex;
-  gap: 9px;
-  flex-wrap: wrap;
-  animation: fadeUp 1s ease both;
-}
-.badge {
-  padding: 5px 13px;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.badge:hover { transform: translateY(-3px) scale(1.05); }
-.badge::after {
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
-}
-.bg { background:rgba(0,230,130,0.12); border:1px solid rgba(0,230,130,0.4); color:#00e682; }
-.bp { background:rgba(200,80,255,0.12); border:1px solid rgba(200,80,255,0.4); color:var(--p); }
-.bb { background:rgba(0,200,255,0.12); border:1px solid rgba(0,200,255,0.4); color:var(--p3); }
-
-/* FASTBOOT PILL */
-.fastboot-pill {
-  position: absolute;
-  top: 22px; right: 50px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,140,66,0.1);
-  border: 1px solid rgba(255,140,66,0.5);
-  border-radius: 30px;
-  padding: 7px 18px;
-  z-index: 30;
-  animation: pillIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both 0.4s;
-}
-@keyframes pillIn {
-  from { transform:scale(0) rotate(-10deg); opacity:0; }
-  to   { transform:scale(1) rotate(0deg); opacity:1; }
-}
-.fastboot-pill .ficon {
-  font-size: 15px;
-  animation: flashPulse 1s ease-in-out infinite;
-}
-@keyframes flashPulse {
-  0%,100% { transform:scale(1); opacity:1; }
-  50%      { transform:scale(0.75); opacity:0.5; }
-}
-.fastboot-pill span {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--p4);
-  text-transform: uppercase;
-}
-
-/* VERTICAL DIVIDER */
-.vline {
-  width: 1px;
-  align-self: stretch;
-  background: linear-gradient(180deg, transparent, rgba(200,80,255,0.3), rgba(255,60,140,0.3), transparent);
-  flex-shrink: 0;
-}
-
-/* === RIGHT === */
-.right {
-  flex: 0.85;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0;
-}
-
-.info-row {
-  padding: 11px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  animation: fadeLeft 0.7s ease both;
-}
-.info-row:last-child { border-bottom: none; }
-.info-row .il {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  color: rgba(255,255,255,0.28);
-  text-transform: uppercase;
-  margin-bottom: 3px;
-}
-.info-row .iv {
-  font-family: 'Space Mono', monospace;
-  font-size: 13px;
-  color: rgba(255,255,255,0.85);
-  letter-spacing: 0.5px;
-}
-
-.maint-row {
-  padding: 13px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  animation: fadeLeft 0.9s ease both;
-}
-.maint-row .il {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  color: rgba(255,255,255,0.28);
-  text-transform: uppercase;
-  margin-bottom: 5px;
-}
-.maint-name {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  background: linear-gradient(90deg, var(--p), var(--p2), var(--p4));
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradShift 3s ease infinite;
-  letter-spacing: 4px;
-}
-
-.credits-row {
-  padding: 13px 0;
-  animation: fadeLeft 1s ease both;
-}
-.credits-row .il {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  color: rgba(255,255,255,0.28);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.credit {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 5px;
-  font-size: 13px;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 0.3px;
-}
-.credit-dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Download button */
-.dl-btn {
-  position: absolute;
-  bottom: 22px; right: 50px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(135deg, rgba(200,80,255,0.2), rgba(255,60,140,0.15));
-  border: 1px solid rgba(200,80,255,0.5);
-  border-radius: 10px;
-  padding: 10px 22px;
-  text-decoration: none;
-  z-index: 30;
-  animation: fadeUp 1.2s ease both;
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
-.dl-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(200,80,255,0.3);
-}
-.dl-btn .dico { font-size: 16px; }
-.dl-btn span {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: #fff;
-  text-transform: uppercase;
-}
-
-/* Corner accents */
-.corner {
-  position: absolute;
-  width: 24px; height: 24px;
-  z-index: 25;
-}
-.c-tl { top:12px; left:12px; border-top:2px solid var(--p); border-left:2px solid var(--p); animation: cGlow 2s ease-in-out infinite alternate; }
-.c-tr { top:12px; right:12px; border-top:2px solid var(--p2); border-right:2px solid var(--p2); animation: cGlow 2.3s ease-in-out infinite alternate-reverse; }
-.c-bl { bottom:12px; left:12px; border-bottom:2px solid var(--p3); border-left:2px solid var(--p3); animation: cGlow 2.6s ease-in-out infinite alternate; }
-.c-br { bottom:12px; right:12px; border-bottom:2px solid var(--p4); border-right:2px solid var(--p4); animation: cGlow 2.9s ease-in-out infinite alternate-reverse; }
-@keyframes cGlow {
-  from { opacity:0.4; }
-  to   { opacity:1; filter:drop-shadow(0 0 6px currentColor); }
-}
-
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(16px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-@keyframes fadeLeft {
-  from { opacity:0; transform:translateX(16px); }
-  to   { opacity:1; transform:translateX(0); }
-}
-</style>
+        /* simplified credits section */
+        .credits-simple {
+            margin-top: 18px;
+            padding: 12px 0 4px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .credits-title {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .names-inline {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #ccd6f0;
+        }
+        .names-inline span {
+            background: rgba(255,255,255,0.03);
+            padding: 3px 10px;
+            border-radius: 40px;
+        }
+        code {
+            background: rgba(0,0,0,0.4);
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 11px;
+        }
+    </style>
 </head>
 <body>
-<div class="banner">
-  <!-- BG layers -->
-  <div class="bg"></div>
-  <div class="grid"></div>
-  <div class="scanlines"></div>
-  <div class="glitch"></div>
-  <div class="particles" id="pts"></div>
-  <div class="border-ring"></div>
-  <div class="top-bar"></div>
-  <div class="bottom-bar"></div>
 
-  <!-- Corners -->
-  <div class="corner c-tl"></div>
-  <div class="corner c-tr"></div>
-  <div class="corner c-bl"></div>
-  <div class="corner c-br"></div>
+<div class="bg-aura"></div>
+<div class="bg-aura-2"></div>
 
-  <!-- Fastboot pill -->
-  <div class="fastboot-pill">
-    <span class="ficon">⚡</span>
-    <span>Fastboot ROM</span>
-  </div>
+<div id="loader">
+    <div class="loader-ring"></div>
+    <div style="font-weight: 500; letter-spacing: 2px; font-size: 13px;">HYPEROS 3.0</div>
+</div>
 
-  <!-- Download button -->
-  <a class="dl-btn" href="https://drive.google.com/file/d/1nW83oDePwsCg316X6WPKEdA0tchzbyOk/view?usp=sharing" target="_blank">
-    <span class="dico">📥</span>
-    <span>Download ROM</span>
-  </a>
+<div class="container" id="mainContainer">
+    <div class="glass-card">
+        <!-- header -->
+        <div class="chip-device">
+            <i class="fas fa-microchip"></i> XIAOMI 11i · PISSARRO
+        </div>
+        <div class="title">
+            <span class="title-gradient">HyperOS</span> 3.0 
+            <span class="certified-badge"><i class="fas fa-check-circle"></i> DEVICE CERTIFIED</span>
+        </div>
+        <div class="os-badge">
+            <i class="fab fa-android"></i> Android 15 · Full Stock ROM
+            <span class="stock-tag"><i class="fas fa-box"></i> Stock Experience</span>
+        </div>
 
-  <div class="content">
-    <!-- LEFT -->
-    <div class="left">
-      <div class="live-tag">
-        <div class="live-dot"></div>
-        <span>Official Release</span>
-      </div>
-      <div class="brand">Xiaomi</div>
-      <div class="model">11i</div>
-      <div class="os-name">HyperOS 3.0</div>
+        <!-- info grid - each in one line -->
+        <div class="info-modern">
+            <div class="info-tile">
+                <span class="info-label"><i class="fas fa-tag"></i> Build</span>
+                <span class="info-value">3.0.2.0.VNQMIXM</span>
+            </div>
+            <div class="info-tile">
+                <span class="info-label"><i class="fas fa-shield-alt"></i> Security Patch</span>
+                <span class="info-value">May 2026</span>
+            </div>
+            <div class="info-tile flash-method-tile">
+                <span class="info-label"><i class="fas fa-user-astronaut"></i> Flash Method</span>
+                <span class="info-value">Fastboot Only</span>
+            </div>
+            <div class="info-tile maintainer-tile">
+                <span class="info-label"><i class="fas fa-crown"></i> Maintainer</span>
+                <span class="info-value">亗 ROLEX 亗</span>
+            </div>
+        </div>
 
-      <div class="ver-box">
-        <span class="vl">Build</span>
-        <span class="vv">3.0.2.0.VNQMIXM</span>
-      </div>
+        <!-- main download buttons -->
+        <div class="btn-group">
+            <a href="https://drive.google.com/file/d/1nW83oDePwsCg316X6WPKEdA0tchzbyOk/view?usp=sharing" target="_blank" class="btn btn-primary">
+                <i class="fas fa-download"></i> Full Stock ROM
+            </a>
+            <a href="https://github.com/saurabhpattebahadur7/recovery_xiaomi_pissarro-ofox/releases/tag/Pissarro" target="_blank" class="btn btn-orange">
+                <i class="fas fa-fox"></i> OrangeFox Recovery
+            </a>
+        </div>
 
-      <div class="badges">
-        <div class="badge bg">✓ Certified</div>
-        <div class="badge bp">✓ Full Stock</div>
-        <div class="badge bb">✓ Fixed ROM</div>
-      </div>
+        <!-- action chips: changelog / guide -->
+        <div class="action-row">
+            <div class="action-chip" id="btnChangelog" onclick="togglePanelDynamic('changelogPanel', this)">
+                <i class="fas fa-list-ul"></i> Changelog
+            </div>
+            <div class="action-chip" id="btnGuide" onclick="togglePanelDynamic('guidePanel', this)">
+                <i class="fas fa-book-open"></i> Installation
+            </div>
+        </div>
+
+        <!-- CHANGELOG PANEL -->
+        <div id="changelogPanel" class="panel">
+            <div class="panel-title">
+                <i class="fas fa-sparkles" style="color: #2b7fff;"></i> Build Highlights
+            </div>
+            <ul class="log-list">
+                <li><i class="fas fa-check-circle"></i> Full Stock HyperOS 3.0 — pure Xiaomi experience</li>
+                <li><i class="fas fa-check-circle"></i> Device is <strong style="color:#00e676;">Play Protect Certified</strong></li>
+                <li><i class="fas fa-check-circle"></i> Rebased on Android 15 QPR2 with May 2026 security patches</li>
+                <li><i class="fas fa-check-circle"></i> Stable, bloat-free, official-like build</li>
+                <li><i class="fas fa-check-circle"></i> All banking apps & Google services work out of the box</li>
+                <li><i class="fas fa-check-circle"></i> No mods, no extra UI changes — just pure HyperOS 3.0</li>
+            </ul>
+            <div class="divider-light"></div>
+            <div style="font-size: 11px; color: #8f9bb3; text-align: center; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                <span><i class="fas fa-check-circle" style="color:#00e676;"></i> Certified Build</span>
+                <span><i class="fas fa-box"></i> 100% Stock</span>
+                <span><i class="fas fa-shield-alt"></i> SafetyNet Pass</span>
+            </div>
+        </div>
+
+        <!-- GUIDE / INSTALLATION PANEL - Fastboot only -->
+        <div id="guidePanel" class="panel">
+            <div class="panel-title">
+                <i class="fas fa-tools"></i> Fastboot Installation Guide
+            </div>
+            <div style="margin-bottom: 10px;">
+                <span class="badge-small"><i class="fas fa-bolt"></i> Fastboot method (Official Way)</span>
+            </div>
+            <div class="guide-step">
+                <strong>Step 1:</strong>
+                <p>Reboot device to Fastboot mode (Volume Down + Power).</p>
+            </div>
+            <div class="guide-step">
+                <strong>Step 2:</strong>
+                <p>Connect to PC and extract downloaded ROM zip.</p>
+            </div>
+            <div class="guide-step">
+                <strong>Step 3:</strong>
+                <p>Run the flash script (flash_all.bat / flash_all.sh) from extracted folder.</p>
+            </div>
+            <div class="guide-step">
+                <strong>Step 4:</strong>
+                <p>Wait for process to finish — device auto-reboots into certified HyperOS 3.0.</p>
+            </div>
+            <div class="divider-light"></div>
+            <div class="guide-step">
+                <strong><i class="fas fa-envelope"></i> Support group:</strong>
+                <p><a href="https://t.me/+15Wry9FCQqs0MGY1" target="_blank" style="color: var(--accent-cyan);">Join Telegram Channel</a> for updates & help.</p>
+            </div>
+            <div class="divider-light"></div>
+            <div style="font-size: 11px; color: #8f9bb3; text-align: center; padding: 4px;">
+                <i class="fas fa-info-circle"></i> Fastboot flashing is the recommended & only supported method for this build.
+            </div>
+        </div>
+
+        <!-- SIMPLIFIED CREDITS: Special Thanks -->
+        <div class="credits-simple">
+            <div class="credits-title">
+                <i class="fas fa-heart" style="color: var(--orange-fox);"></i> SPECIAL THANKS
+            </div>
+            <div class="names-inline">
+                <span>@sujithsnk</span>
+                <span>@Stability_BrickOS</span>
+                <span>@Unevenatharv</span>
+                <span>@KaoriosToolbox</span>
+            </div>
+        </div>
     </div>
-
-    <div class="vline"></div>
-
-    <!-- RIGHT -->
-    <div class="right">
-      <div class="info-row">
-        <div class="il">Android</div>
-        <div class="iv">15 · AP3A.240905.015.A2</div>
-      </div>
-      <div class="info-row">
-        <div class="il">Security Patch</div>
-        <div class="iv">May 01, 2026</div>
-      </div>
-      <div class="info-row">
-        <div class="il">Flash Method</div>
-        <div class="iv">flash_all.bat (Admin)</div>
-      </div>
-
-      <div class="maint-row">
-        <div class="il">Maintainer</div>
-        <div class="maint-name">≡ ROLEX ≡</div>
-      </div>
-
-      <div class="credits-row">
-        <div class="il">Credits</div>
-        <div class="credit"><div class="credit-dot" style="background:var(--p)"></div>@sujithsnk</div>
-        <div class="credit"><div class="credit-dot" style="background:var(--p2)"></div>@Stability_BrickOS</div>
-        <div class="credit"><div class="credit-dot" style="background:var(--p3)"></div>@Unevenatharv</div>
-      </div>
+    <div class="footer-note">
+        <i class="fas fa-crown"></i> HyperOS 3.0 | Xiaomi 11i · Certified Full Stock ROM
     </div>
-  </div>
 </div>
 
 <script>
-// Particles
-const pts = document.getElementById('pts');
-const colors = ['#c850ff','#ff3c8e','#00e5ff','#ff8c42','#ffe600','#ffffff'];
-for(let i = 0; i < 50; i++){
-  const p = document.createElement('div');
-  p.className = 'p';
-  const size = Math.random() * 3 + 1;
-  const color = colors[Math.floor(Math.random() * colors.length)];
-  p.style.cssText = `
-    width:${size}px; height:${size}px;
-    left:${Math.random()*100}%;
-    top:${Math.random()*100+100}%;
-    background:${color};
-    box-shadow:0 0 ${size*3}px ${color};
-    animation-duration:${Math.random()*6+4}s;
-    animation-delay:${Math.random()*8}s;
-  `;
-  pts.appendChild(p);
-}
+    // loader animation
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const loader = document.getElementById('loader');
+            const container = document.getElementById('mainContainer');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                container.style.display = 'block';
+                setTimeout(() => {
+                    container.classList.add('loaded');
+                }, 20);
+            }, 550);
+        }, 900);
+    });
+
+    // panel toggle with active class
+    function togglePanelDynamic(panelId, element) {
+        const panel = document.getElementById(panelId);
+        const allPanels = document.querySelectorAll('.panel');
+        const allChips = document.querySelectorAll('.action-chip');
+
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none';
+            element.classList.remove('active');
+        } else {
+            allPanels.forEach(p => p.style.display = 'none');
+            allChips.forEach(chip => chip.classList.remove('active'));
+            panel.style.display = 'block';
+            element.classList.add('active');
+        }
+    }
+
+    // OrangeFox button hover effect
+    const orangeBtn = document.querySelector('.btn-orange');
+    if(orangeBtn) {
+        orangeBtn.addEventListener('mouseenter', () => {
+            orangeBtn.style.boxShadow = '0 10px 28px -3px rgba(255, 110, 44, 0.7)';
+        });
+        orangeBtn.addEventListener('mouseleave', () => {
+            orangeBtn.style.boxShadow = '0 8px 20px -5px rgba(255, 110, 44, 0.5)';
+        });
+    }
 </script>
 </body>
 </html>
